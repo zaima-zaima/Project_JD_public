@@ -1,0 +1,54 @@
+@baseColor:#f10215;
+@bgColor:#f4f4f4;
+@dgold:rgb(202, 187, 103);
+@linkColor:#4184e8;
+@border:#e4e4e4;
+
+
+@titleHeight: 50px;
+@titleBgColor: #174d63;
+
+* {
+    margin:0;
+    padding:0;
+    font-size:12px;
+    color:#999;
+}
+
+a {
+    text-decoration: none;
+}
+
+ul,li {
+    list-style:none;
+}
+
+.hover-base:hover,.base {
+    color:@baseColor;
+}
+
+.pointer {
+    cursor: pointer;
+}
+
+.underWhite {
+    &::after {
+        content: "";
+        display: block;
+        border: 1px solid #fff;
+        position: absolute;
+        z-index: 4;
+        width: 100%;
+      }
+}
+
+.center {
+    display:flex;
+    align-items: center;
+    justify-content: center;
+}
+
+::selection {
+    background-color: transparent;
+}
+
