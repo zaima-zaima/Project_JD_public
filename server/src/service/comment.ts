@@ -17,10 +17,14 @@ import goodsModel from "../mysql/model/goods";
 import Error from "../utils/Error";
 import { Goods } from "../types/Goods";
 
-export async function fetchCommentByGoodsId(gid: string) {
+export async function fetchCommentByGoodsId(
+  gid: string,
+  page: number = 1,
+  limit: number = 10
+) {
   try {
     const resp = parser(
-      await findCommentByGoodsId(gid)
+      await findCommentByGoodsId(gid, page, limit)
     ) as unknown as ResponseWithCount<Comment>;
 
     for (let i = 0; i < resp.rows.length; i++) {

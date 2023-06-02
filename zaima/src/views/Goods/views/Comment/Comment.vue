@@ -2,7 +2,14 @@
   <div class="comment-container">
     <div class="comment-content">
       <Loading :size="200" v-if="state.loading" />
-      <Content :data="state.data" v-else />
+      <Content
+        :data="state.data"
+        :total="state.total"
+        :page="state.page"
+        :limit="state.limit"
+        @change="changePage"
+        v-else
+      />
     </div>
   </div>
   <div class="empty" v-if="state.data.length === 0 && !state.loading">
@@ -27,18 +34,28 @@ const route = useRoute();
 const state = reactive({
   data: [] as CommentType[],
   loading: false,
+  page: 1,
+  limit: 10,
+  total: 0,
 });
 
 watchEffect(async () => {
   if (route.params.id) {
     state.loading = true;
     const resp = (await fetchCommentByGoods(
-      route.params.id as string
+      route.params.id as string,
+      state.page,
+      state.limit
     )) as unknown as ResponseWithCount<CommentType>;
     state.loading = false;
     state.data = resp.rows;
+    state.total = resp.count;
   }
 });
+
+function changePage(newPage: number) {
+  state.page = newPage;
+}
 </script>
 
 <style scoped lang="less">

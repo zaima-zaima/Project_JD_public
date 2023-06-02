@@ -14,7 +14,11 @@ const router = Express();
 
 router.get("/:gid", async (req, res, next) => {
   try {
-    const resp = await fetchCommentByGoodsId(req.params.gid);
+    const resp = await fetchCommentByGoodsId(
+      req.params.gid,
+      +(req.query.page as string),
+      +(req.query.limit as string)
+    );
     res.send(formatResponse(0, "查询成功", resp));
   } catch (err) {
     next(err);

@@ -1,12 +1,18 @@
 import { Comment } from "../../types/comment";
 import model from "../model/comment";
 
-export async function findCommentByGoodsId(gid: string) {
+export async function findCommentByGoodsId(
+  gid: string,
+  page: number,
+  limit: number
+) {
   return await model.findAndCountAll({
     where: {
       goodsid: gid,
     },
     order: [["createdAt", "DESC"]],
+    offset: (page - 1) * limit,
+    limit,
   });
 }
 
