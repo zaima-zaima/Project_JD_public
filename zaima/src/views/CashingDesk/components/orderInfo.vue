@@ -117,7 +117,7 @@
         <div class="right">
           <div class="tip" v-if="state.tip">请选择一个收货地址</div>
           <div class="submitOrder pointer center" @click="orderSubmit">
-            提交订单
+            {{ state.submiting ? "提交中...." : "提交订单" }}
           </div>
         </div>
       </div>
@@ -184,6 +184,7 @@ const state = reactive({
   order: {} as Order,
   tip: false,
   baitiao: false,
+  submiting: false,
 });
 
 const total = computed(() => {
@@ -257,6 +258,10 @@ function change() {
 }
 
 async function orderSubmit() {
+  if (state.submiting) {
+    return;
+  }
+
   if (!state.default || !state.default.province) {
     state.tip = true;
     return;
@@ -272,6 +277,7 @@ async function orderSubmit() {
     orderList: store.state.cartSelected,
   } as Order;
   const resp = (await submitOrder(order)) as any;
+  state.submiting = false;
 
   if (resp.code && resp.code !== 0) {
     state.orderStatus = "error";

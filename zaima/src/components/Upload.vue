@@ -7,9 +7,10 @@
       border: props.imgType ? 'none' : '1px solid #000',
     }"
   >
-    <span v-if="!props.imgType">+</span>
+    <span v-if="!props.imgType && !state.uploading">+</span>
     <slot v-else></slot>
     <input type="file" :name="props.name" @change="change" ref="input" />
+    <Loading :size="200" v-if="state.uploading" />
     <Modal :show="state.show">
       <Alert
         :text="state.errorMsg"
@@ -28,6 +29,7 @@ import { onMounted, reactive, Ref, ref, watchEffect } from "vue";
 import request from "../api/request";
 import Alert from "./Alert.vue";
 import Modal from "./Modal.vue";
+import Loading from "./Loading.vue";
 
 interface PropsType {
   name: string;
@@ -48,6 +50,7 @@ const state = reactive({
   count: 0,
   show: false,
   errorMsg: "",
+  uploading: false,
 });
 
 const emits = defineEmits(["uploadPath"]);
@@ -65,6 +68,12 @@ onMounted(() => {
 });
 
 async function change() {
+  if (state.uploading) {
+    state.show = true;
+    state.errorMsg = "目前尚有还未完成的文件，请等待该文件上传完毕后重试";
+    return;
+  }
+
   if (props.limit && state.count >= props.limit) {
     state.show = true;
     state.errorMsg = `超出上传数量：你只能上传${props.limit}张`;
@@ -85,7 +94,9 @@ async function change() {
     }
   }
 
+  state.uploading = true;
   const resp = await request.post(props.url, formData);
+  state.uploading = false;
   state.count = state.count + 1;
 
   emits("uploadPath", resp);

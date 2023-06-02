@@ -37,7 +37,9 @@
             <div class="forgetPass">忘记密码</div>
           </div>
           <div class="login-button" @click="goLogin">
-            <div class="button">登&nbsp;&nbsp;录</div>
+            <div class="button">
+              {{ state.logining ? "登陆中" : "登&nbsp;&nbsp;录" }}
+            </div>
           </div>
           <div class="footer">
             <div class="footer-inner">
@@ -85,6 +87,7 @@ const store = useStore();
 const router = useRouter();
 
 const state = reactive({
+  logining: false,
   form: {
     username: "",
     password: "",
@@ -106,6 +109,10 @@ watchEffect(() => {
 });
 
 async function goLogin() {
+  if (state.logining) {
+    return;
+  }
+
   if (!state.form.username) {
     state.errors.username = "用户名不能为空";
     return;
@@ -116,7 +123,11 @@ async function goLogin() {
     return;
   }
 
+  state.logining = true;
+
   const admin = await store.dispatch("Login", state.form);
+  state.logining = false;
+
   if (admin.code && admin.code !== 0) {
     state.dialog = true;
   }

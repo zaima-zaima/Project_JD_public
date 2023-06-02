@@ -53,7 +53,9 @@
     <div class="errors" v-show="state.errors">请检查信息是否正确后重试</div>
 
     <div class="butns">
-      <div class="confirm pointer" @click="confirmHandle">确认</div>
+      <div class="confirm pointer" @click="confirmHandle">
+        {{ state.creating ? "请稍等..." : "确认" }}
+      </div>
       <div class="cancel">
         <span class="pointer hover-base" @click="cancelHandle"> 取消</span>
       </div>
@@ -81,6 +83,7 @@ const state = reactive({
     phone: true,
   },
   errors: false,
+  creating: false,
 });
 
 const emits = defineEmits(["confirm", "cancel"]);
@@ -118,6 +121,10 @@ function checkPhone() {
 }
 
 function confirmHandle() {
+  if (state.creating) {
+    return;
+  }
+
   if (
     !state.form.name ||
     !state.form.phone ||
@@ -128,8 +135,11 @@ function confirmHandle() {
 
     return;
   }
+  state.creating = true;
 
-  emits("confirm", state.form);
+  emits("confirm", state.form, () => {
+    state.creating = false;
+  });
 }
 
 function cancelHandle() {

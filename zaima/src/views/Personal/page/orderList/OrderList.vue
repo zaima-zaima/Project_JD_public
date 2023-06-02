@@ -159,9 +159,16 @@ async function changeDeliverStatus(
   });
 }
 
-async function submitComment(comment: Comment, callback: Function) {
+async function submitComment(
+  comment: Comment,
+  callback: Function,
+  before: Function,
+  after: Function
+) {
   comment.uid = store.state.user.id;
+  before();
   const resp = await commentCreator(comment);
+  after();
   state.list = state.list.map((item) => {
     if (comment.oid === item.id) {
       item.status = OrderStatus.complated;

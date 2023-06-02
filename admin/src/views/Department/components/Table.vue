@@ -4,7 +4,7 @@
       :data="props.data"
       style="width: 100%"
       v-loading="props.loading"
-      v-if="props.data.length !== 0"
+      v-if="props.data.length !== 0 || props.loading"
     >
       <el-table-column
         fixed
@@ -48,7 +48,7 @@
         </template>
       </el-table-column>
     </el-table>
-    <el-empty description="暂无待处理的信息" :image-size="80" />
+    <el-empty description="暂无待处理的信息" v-else :image-size="80" />
     <div class="footer">
       <el-button type="danger" @click="closeHandel">关闭</el-button>
     </div>

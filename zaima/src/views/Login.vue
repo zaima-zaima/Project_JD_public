@@ -75,7 +75,11 @@
             <div class="forgetPass">忘记密码</div>
           </div>
           <div class="login-button" @click="goLogin">
-            <div class="button">登&nbsp;&nbsp;录</div>
+            <div class="button">
+              {{
+                state.logining ? "登录中...." : "登&nbsp;&nbsp;&nbsp;&nbsp陆"
+              }}
+            </div>
           </div>
           <div class="footer">
             <div class="footer-inner">
@@ -127,6 +131,7 @@ const route = useRoute();
 const state = reactive({
   show: false,
   alertText: "",
+  logining: false,
   form: {
     username: "",
     password: "",
@@ -161,6 +166,10 @@ function checkFormat(verify: any, data: any, msg: string) {
 }
 
 async function goLogin() {
+  if (state.logining) {
+    return;
+  }
+
   if (!state.form.username || !state.form.password) {
     checkFormat(state.form.username, state.errors.username, "* 该项为必选");
     checkFormat(state.form.password, state.errors.password, "* 该项为必选");
@@ -171,7 +180,11 @@ async function goLogin() {
     state.errors.username.show = false;
   }
 
+  state.logining = true;
+
   const data = await store.dispatch("Login", state.form);
+
+  state.logining = false;
 
   if (data && data.code && data.code !== 0 && data.msg) {
     state.show = true;

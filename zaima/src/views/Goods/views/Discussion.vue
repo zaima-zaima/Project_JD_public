@@ -49,10 +49,10 @@
         ></textarea>
         <div
           class="send pointer"
-          :class="{ disabled: !state.value }"
+          :class="{ disabled: !state.value || state.sending }"
           @click="sendMsg"
         >
-          发送
+          {{ state.sending ? "发送中" : "发送" }}
         </div>
       </div>
     </div>

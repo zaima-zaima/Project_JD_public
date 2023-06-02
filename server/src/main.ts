@@ -22,6 +22,7 @@ import Discussion from "./routes/discussion";
 import Comment from "./routes/comment";
 import Transfer from "./routes/transfer";
 import Chat from "./routes/chat";
+import OverView from "./routes/overview";
 import { app, httpServer, io } from "./websoket/socket";
 
 import sessionScure from "../configure/session";
@@ -104,6 +105,7 @@ app.use("/api/discussion", Discussion);
 app.use("/api/comment", Comment);
 app.use("/api/transfer", Transfer);
 app.use("/api/chat", Chat);
+app.use("/api/overview", OverView);
 
 // 错误处理
 

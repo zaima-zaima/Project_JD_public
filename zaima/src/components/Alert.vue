@@ -10,7 +10,9 @@
       >
         取消
       </div>
-      <div class="comfirm pointer" @click="comfirm">确认</div>
+      <div class="comfirm pointer" @click="comfirm">
+        {{ props.loading ? "请稍后...." : "确认" }}
+      </div>
     </div>
   </div>
 </template>
@@ -20,6 +22,7 @@ interface PropTypes {
   title: string;
   text: string;
   alert?: boolean;
+  loading?: boolean;
 }
 
 const props = withDefaults(defineProps<PropTypes>(), {

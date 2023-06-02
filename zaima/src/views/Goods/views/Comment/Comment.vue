@@ -1,10 +1,11 @@
 <template>
-  <div class="comment-container" v-if="state.data.length !== 0">
+  <div class="comment-container">
     <div class="comment-content">
-      <Content :data="state.data" />
+      <Loading :size="200" v-if="state.loading" />
+      <Content :data="state.data" v-else />
     </div>
   </div>
-  <div class="empty" v-else>
+  <div class="empty" v-if="state.data.length === 0 && !state.loading">
     <Icon :type="StyleType.cartEmpty" :size="60" />
     <span>该商品暂没有任何评论哦！</span>
   </div>
@@ -19,19 +20,22 @@ import { Comment as CommentType } from "../../../../types/comment";
 import { StyleType } from "../../../../types/enum";
 import { ResponseWithCount } from "../../../../types/response";
 import Content from "./Content.vue";
+import Loading from "../../../../components/Loading.vue";
 
 const route = useRoute();
 
 const state = reactive({
   data: [] as CommentType[],
+  loading: false,
 });
 
 watchEffect(async () => {
   if (route.params.id) {
+    state.loading = true;
     const resp = (await fetchCommentByGoods(
       route.params.id as string
     )) as unknown as ResponseWithCount<CommentType>;
-
+    state.loading = false;
     state.data = resp.rows;
   }
 });

@@ -4,7 +4,7 @@
       :data="props.data"
       style="width: 100%"
       v-loading="props.loading"
-      v-if="props.data.length !== 0"
+      v-if="props.data.length !== 0 || props.loading"
     >
       <el-table-column fixed prop="brand" label="品牌" width="100" />
       <el-table-column prop="name" label="名称" width="150" />

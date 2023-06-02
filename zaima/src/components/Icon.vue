@@ -42,11 +42,12 @@ const fonts = {
   arrowRightDireactor: "youjiantou2",
   huangguan: "huangguan",
   store: "store",
+  close: "close",
 } as any;
 </script>
 
 <style scopedd lang="less">
-@import "//at.alicdn.com/t/c/font_3925574_hrfmlsf27h8.css";
+@import "//at.alicdn.com/t/c/font_3925574_tf1nafbv03f.css";
 
 .iconfont {
   color: inherit;

@@ -1,6 +1,6 @@
 <template>
   <div class="order-detail-container" v-if="state.order">
-    <div class="order-detail-content">
+    <div class="order-detail-content" v-if="state.order.id">
       <div class="order-main-pannel">
         <div class="order-status-container">
           <div class="order-no">订单号: {{ state.order.id }}</div>
@@ -36,6 +36,9 @@
       <GoodsInfo :data="state.order" />
       <DeliverInfo :data="state.order" />
     </div>
+    <div class="loading" v-else>
+      <Loading :size="200" text="加载中" />
+    </div>
   </div>
   <div class="order-not-found center" v-else>
     <Icon :type="StyleType.cartEmpty" :size="100"></Icon>
@@ -53,6 +56,7 @@ import { Order, OrderStatus } from "../../types/order";
 import Prograss from "../../components/Prograss/index.vue";
 import DeliverInfo from "./pages/DeliverInfo.vue";
 import GoodsInfo from "./pages/GoodsInfo.vue";
+import Loading from "../../components/Loading.vue";
 
 const router = useRouter();
 const route = useRoute();
@@ -100,6 +104,11 @@ watchEffect(async () => {
   width: 100%;
   display: flex;
   justify-content: center;
+  .loading {
+    width: 100%;
+    height: 100%;
+    background-color: #fff;
+  }
   .order-detail-content {
     width: 100%;
     box-sizing: border-box;

@@ -4,11 +4,11 @@
     <div class="toolBar">
       <ToolBar @addDepartment="addDepartment" />
     </div>
-    <div class="content-box">
+    <div class="content-box" v-loading="state.loading">
       <div class="content">
         <div
           class="menu"
-          v-if="store.state.user && +store.state.user.authLevel === 0"
+          v-if="store.state.user && String(store.state.user.authLevel) === '0'"
         >
           <Menu :data="state.data" @fetchAdmin="fetchAdmin" />
         </div>
@@ -46,11 +46,14 @@ import { useStore } from "vuex";
 const state = reactive({
   data: [] as Department[],
   admin: [] as AdminType[],
+  loading: false,
 });
 
 const store = useStore();
 
 watchEffect(async () => {
+  state.loading = true;
+
   if (store.state.user && store.state.user.authLevel === 0) {
     // 当管理员事root用户
     state.data = (await fetchAllDeparment()) as unknown as Department[];
@@ -69,6 +72,8 @@ watchEffect(async () => {
       department: admin.department,
     })) as unknown as AdminType[];
   }
+
+  state.loading = false;
 
   state.admin.sort((a: AdminType, b: AdminType) => {
     if (a.leader) {

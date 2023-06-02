@@ -4,7 +4,7 @@
     <div class="steps">
       <Steps :steps="state.steps" :current="state.current" />
     </div>
-    <div class="form">
+    <div class="form" v-loading="state.dataLoading">
       <el-form
         :model="state.form"
         @onsumit.prevent
@@ -195,14 +195,17 @@ const state = reactive({
   failed: false,
   error: {} as ErrorResponse,
   accepts: ["jpeg", "png", "gif"],
+  dataLoading: false,
 });
 
 const route = useRoute();
 
 watchEffect(async () => {
+  state.dataLoading = true;
   state.form = (await getGoodsById(
     route.params.id as string
   )) as unknown as Goods;
+  state.dataLoading = false;
 });
 
 const form = ref();

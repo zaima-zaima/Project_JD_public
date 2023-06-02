@@ -55,6 +55,7 @@
             >发送验证码</span
           >
           <span v-else>{{ store.state.timer }}</span>
+          <span v-if="state.sending">发送中....</span>
         </div>
       </div>
       <div class="verify-error" v-if="state.codeVerify">
@@ -130,7 +131,9 @@
           }}</span>
         </p>
       </div>
-      <div class="nextStep center" @click="comfirmRegister">确认注册</div>
+      <div class="nextStep center" @click="comfirmRegister">
+        {{ state.preduceding ? "请稍后" : "确认注册" }}
+      </div>
     </div>
 
     <Complate v-if="route.query.step && +route.query.step === 3" />
@@ -156,6 +159,8 @@ const router = useRouter();
 const route = useRoute();
 const store = useStore();
 const state = reactive({
+  preduceding: false,
+  sending: false,
   error: null as any,
   tip: false,
   usernameCheck: false,
@@ -213,7 +218,13 @@ async function nextStep() {
 }
 
 async function comfirmRegister() {
+  if (state.preduceding) {
+    return;
+  }
+
   if (state.usernameCheck && state.passwordCheck && state.rePasswordCheck) {
+    state.preduceding = true;
+
     const resp = (await signup(state.form)) as any;
     if (!resp.code && resp) {
       router.push({
@@ -223,17 +234,24 @@ async function comfirmRegister() {
         },
       });
     }
+    state.preduceding = false;
   } else {
     return;
   }
 }
 
 async function send() {
+  if (state.sending) {
+    return;
+  }
+
   if (!reg.test(state.form.phone)) {
     state.verify = "false";
     return;
   }
+  state.sending = true;
   state.error = await store.dispatch("SendSms", state.form.phone);
+  state.sending = false;
 }
 
 async function userNameBlur() {

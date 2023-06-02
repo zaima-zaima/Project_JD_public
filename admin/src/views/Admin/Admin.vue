@@ -11,7 +11,7 @@
       />
     </div>
     <div class="tip">提示：此处只展示隶属于该账号下的管理员</div>
-    <div class="table" v-if="state.data.length !== 0">
+    <div class="table" v-if="state.data.length !== 0 || state.loading">
       <Table
         :admin="state.data"
         :total="state.total"

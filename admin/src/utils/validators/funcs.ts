@@ -1,6 +1,6 @@
 import { FormItemRule } from "element-plus";
 
-const reg = /^(?!_)(?!.*?_$)[a-zA-Z0-9_\u4e00-\u9fa5]+$/;
+const reg = /^(?!_)(?!.*?_$)[a-zA-Z0-9_\s\/\(\)\u4e00-\u9fa5]+$/;
 
 export function nameValidator(
   rule: FormItemRule,
@@ -12,11 +12,15 @@ export function nameValidator(
   }
 
   if (!reg.test(value)) {
-    callback(new Error("格式有误，提示：只能包含中文英文数字以及下划线"));
+    callback(
+      new Error(
+        "格式有误，提示：只能包含中文英文数字空格左括号右括号以及下划线"
+      )
+    );
   }
 
-  if (value.length < 5 || value.length > 20) {
-    callback(new Error("长度为5-20"));
+  if (value.length < 5 || value.length > 100) {
+    callback(new Error("长度为5-100"));
   }
 
   callback();

@@ -13,16 +13,13 @@
       </div>
       <div class="store-name">
         <div class="name">京东官方旗舰店</div>
-        <div class="icon">
-          <Icon :type="StyleType.chat" />
-        </div>
       </div>
       <div class="tags">
         <span class="tag-item" v-for="item in props.data.tags">{{ item }}</span>
       </div>
       <div class="footer">
-        <div class="like" @click.stop="flowing">
-          <Icon :type="StyleType.chat" />
+        <div class="like hover-base" @click.stop="flowing">
+          <Icon :type="StyleType.star" />
           <span class="hover-base">关注</span>
         </div>
         <div

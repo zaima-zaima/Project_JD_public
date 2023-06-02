@@ -107,6 +107,7 @@ onMounted(async () => {
     flex-direction: column;
     box-sizing: border-box;
     padding: 20px;
+    margin-top: 100px;
     .tip {
       font-size: 13px;
     }

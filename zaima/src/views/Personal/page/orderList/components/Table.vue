@@ -120,6 +120,7 @@
         :text="state.changeStatus.text"
         @cancel="state.changeStatus.show = false"
         @comfirm="comfirmDeliver"
+        :loading="state.waitting"
       />
     </Modal>
 
@@ -146,11 +147,11 @@
       <div class="loading">
         <Loading :size="200" v-if="state.loading" text="支付中" />
         <div class="result success" v-if="state.payResult === 'success'">
-          <Icon :type="StyleType.chat" :size="60" />
+          <Icon :type="StyleType.success" :size="60" />
           <span>支付成功</span>
         </div>
         <div class="result failed" v-else-if="state.payResult === 'failed'">
-          <Icon :type="StyleType.chat" :size="60" />
+          <Icon :type="StyleType.error" :size="60" />
           <span>支付失败</span>
         </div>
       </div>
@@ -221,6 +222,7 @@ const state = reactive({
   },
   current: {} as Order,
   shoosePay: false,
+  waitting: false,
 });
 
 const store = useStore();
@@ -286,12 +288,14 @@ function changeStatus(status: OrderStatus, item: Order) {
 }
 
 function comfirmDeliver() {
+  state.waitting = true;
   emits(
     "changeDeliverStatus",
     state.changeStatus.orderId,
     state.changeStatus.status,
     () => {
       state.changeStatus.show = false;
+      state.waitting = false;
     }
   );
 }
@@ -301,10 +305,20 @@ function goComment(item: Order) {
   state.comments.current = item;
 }
 
-function submitComment(comment: CommentType) {
-  emits("submitComment", comment, () => {
-    state.comments.show = false;
-  });
+function submitComment(
+  comment: CommentType,
+  before: Function,
+  after: Function
+) {
+  emits(
+    "submitComment",
+    comment,
+    () => {
+      state.comments.show = false;
+    },
+    before,
+    after
+  );
 }
 
 function cancelOrder(item: Order) {

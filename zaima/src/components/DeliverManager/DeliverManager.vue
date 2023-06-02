@@ -112,10 +112,10 @@ function selected(item: Deliver, index: number) {
   state.current = item;
 }
 
-async function submitDeliver(form: Deliver) {
+async function submitDeliver(form: Deliver, callback: Function) {
   form.user = store.state.user.id;
   const data = await setDeliver(form);
-  console.log(data);
+  callback();
 
   emits("submitSuccess", data);
   state.edit = false;

@@ -1,7 +1,7 @@
 <template>
   <div class="thumb-container">
     <div class="big-thumb">
-      <img :src="props.thumbs && props.thumbs[state.index]" alt="" />
+      <img :src="props.thumbs && props.thumbs[state.index]" v-lazy alt="" />
     </div>
     <div class="thumbs-scroll">
       <div

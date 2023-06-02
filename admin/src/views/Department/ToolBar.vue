@@ -20,7 +20,10 @@
           </div>
         </div>
       </div>
-      <div class="right">
+      <div
+        class="right"
+        v-if="store.state.user && String(store.state.user.authLevel) === '0'"
+      >
         <el-button type="primary" @click="openModel">添加部门</el-button>
       </div>
     </div>

@@ -3,7 +3,9 @@
     <div class="title">
       <div class="header">
         <span>感谢评论!</span>
-        <span class="close pointer" @click="closeModel"> X</span>
+        <div class="close pointer" @click="closeModel">
+          <Icon :type="StyleType.close" :size="30" />
+        </div>
       </div>
       <div class="tip">真实的评论可以有效的帮助其他买家哦！</div>
     </div>
@@ -54,7 +56,9 @@
           >请输入评论内容</span
         >
       </div>
-      <div class="submit" @click="submit">提交</div>
+      <div class="submit" @click="submit">
+        {{ state.submiting ? "提交中...." : "提交" }}
+      </div>
     </div>
   </div>
 </template>
@@ -65,6 +69,8 @@ import formatDate from "../../../../../utils/formatDate";
 import StarGroup from "../../../../../components/StarGroup.vue";
 import Upload from "../../../../../components/Upload.vue";
 import { reactive } from "vue";
+import Icon from "../../../../../components/Icon.vue";
+import { StyleType } from "../../../../../types/enum";
 
 interface PropsType {
   order: Order;
@@ -93,6 +99,7 @@ const state = reactive({
   },
   uploadLimit: 3,
   currentCount: 0,
+  submiting: false,
 });
 
 function getFilePath(path: string) {
@@ -110,6 +117,10 @@ function closeModel() {
 }
 
 function submit() {
+  if (state.submiting) {
+    return;
+  }
+
   if (state.form.star < 1 || !state.form.content) {
     if (state.form.star < 1) {
       state.errors.star.show = true;
@@ -130,7 +141,16 @@ function submit() {
 
   state.form.goodsid = props.order.goods.id as string;
   state.form.oid = props.order.id as string;
-  emits("submit", state.form);
+  emits(
+    "submit",
+    state.form,
+    () => {
+      state.submiting = true;
+    },
+    () => {
+      state.submiting = false;
+    }
+  );
 }
 
 function onDelete(index: number) {

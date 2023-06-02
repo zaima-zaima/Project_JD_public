@@ -2,7 +2,11 @@
   <div class="goods-info-container">
     <div class="goods">
       <div class="thumb">
-        <img :src="props.data.goods && props.data.goods.thumbs[0]" alt="" />
+        <img
+          :src="props.data.goods && props.data.goods.thumbs[0]"
+          v-lazy
+          alt=""
+        />
       </div>
       <div class="goods-detail">
         <span>本订单由第三方卖家为您发货</span>

@@ -5,7 +5,7 @@
     </div>
     <div class="content">
       <div class="recommadation"></div>
-      <div class="main" v-if="state.data.length !== 0">
+      <div class="main" v-if="state.data.length !== 0 && !state.searching">
         <div
           class="item"
           @click="goGoodDetail(item)"
@@ -22,8 +22,9 @@
           />
         </div>
       </div>
-      <NotFound v-else />
+      <NotFound v-if="state.data.length === 0 && !state.searching" />
     </div>
+    <Loading :size="200" text="请稍后..." v-if="state.searching" />
   </div>
 </template>
 
@@ -38,11 +39,13 @@ import GoodComp from "../../components/Goods.vue";
 import Pager from "../../components/Pager/index.vue";
 
 import NotFound from "./NotFound.vue";
+import Loading from "../../components/Loading.vue";
 const route = useRoute();
 const router = useRouter();
 const state = reactive({
   total: 0,
   data: [] as Goods[],
+  searching: false,
 });
 
 function goGoodDetail(Goods: Goods) {
@@ -56,11 +59,15 @@ function goGoodDetail(Goods: Goods) {
 
 watchEffect(async () => {
   if (route.query.page && route.query.limit) {
+    state.searching = true;
     const resp = (await searchGoods(
       route.query.keyword as string,
       +route.query.page,
       +route.query.limit
     )) as unknown as ResponseWithCount<Goods>;
+
+    state.searching = false;
+
     state.total = resp.count;
     state.data = resp.rows;
     console.log("resp:", resp);

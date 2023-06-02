@@ -3,14 +3,12 @@
     <Title title="订单管理">
       <Edit />
     </Title>
-    <div class="banner">
-      <Banner />
-    </div>
+
     <Table
       :data="state.data"
       @update-order="setDeliver"
       :loading="state.loading"
-      v-if="state.data.length !== 0"
+      v-if="state.data.length !== 0 || state.loading"
     />
 
     <el-empty description="无数据" v-else />

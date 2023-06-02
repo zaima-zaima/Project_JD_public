@@ -216,11 +216,19 @@ export async function whoami(token: string) {
     const result = verify(token) as User;
 
     if (result) {
+      const user = JSON.parse(
+        JSON.stringify(await findOneUserById(result.id as string))
+      ) as User;
+
+      if (user && user.role) {
+        result.credit = user.credit;
+      }
+
       return result;
     } else {
       throw new Error.Expire("token无效或已过期，请重新登录");
     }
-  } catch {
+  } catch (err) {
     throw new Error.UnkownError();
   }
 }

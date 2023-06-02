@@ -18,7 +18,7 @@
           :data="state.user"
           style="width: 100%"
           v-loading="state.loading"
-          v-if="state.user.length !== 0"
+          v-if="state.user.length !== 0 || state.loading"
         >
           <el-table-column fixed prop="username" label="用户名" width="150" />
           <el-table-column prop="phone" label="手机号" width="120" />

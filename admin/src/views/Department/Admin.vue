@@ -56,7 +56,13 @@
       <template #footer>
         <span class="dialog-footer">
           <el-button @click="state.model = false">取消</el-button>
-          <el-button type="primary" @click="confirmHandler"> 确认 </el-button>
+          <el-button
+            type="primary"
+            @click="confirmHandler"
+            :loading="state.comfing"
+          >
+            确认
+          </el-button>
         </span>
       </template>
     </el-dialog>
@@ -89,6 +95,20 @@
               v-for="item in state.form.department"
             />
           </el-select>
+          <div class="tip">
+            <el-popover
+              v-if="state.transfer.form.to && state.form.leader.length === 0"
+              placement="top-start"
+              title=""
+              :width="200"
+              trigger="hover"
+              content="因该部门暂没有leader，系统会自动将该账号设置超级管理员为leader"
+            >
+              <template #reference>
+                <el-icon><QuestionFilled /></el-icon>
+              </template>
+            </el-popover>
+          </div>
         </el-form-item>
 
         <el-form-item label="leader" v-if="state.form.leader.length !== 0">
@@ -103,13 +123,6 @@
             />
           </el-select>
         </el-form-item>
-
-        <div
-          class="tip"
-          v-else-if="state.transfer.form.to && state.form.leader.length === 0"
-        >
-          因该部门暂没有leader，系统会自动将该账号设置超级管理员为leader
-        </div>
 
         <el-form-item
           label="下级转移"
@@ -126,16 +139,19 @@
               v-for="item in state.form.adminTransfer"
             />
           </el-select>
-          <el-tooltip
-            class="box-item"
-            effect="dark"
-            content="因该管理员为该部门的leader，所以在该管理员调动前需要指派该leader下的管理员的上级，当该leader完成交接事宜后，自动将该leader下的管理员设置到指定的leader下"
-            placement="right-end"
-          >
-            <div class="cursor pointer">
-              <el-icon><QuestionFilled /></el-icon>
-            </div>
-          </el-tooltip>
+          <div class="tip">
+            <el-popover
+              placement="top-start"
+              title=""
+              :width="200"
+              trigger="hover"
+              content="因该管理员为该部门的leader，所以在该管理员调动前需要指派该leader下的管理员的上级，当该leader完成交接事宜后，自动将该leader下的管理员设置到指定的leader下"
+            >
+              <template #reference>
+                <el-icon><QuestionFilled /></el-icon>
+              </template>
+            </el-popover>
+          </div>
         </el-form-item>
 
         <el-form-item>
@@ -196,6 +212,7 @@ const state = reactive({
     loading: false,
     adminTransfer: [] as Admin[],
   },
+  comfing: false,
 });
 
 const props = defineProps<PropsType>();
@@ -216,9 +233,11 @@ function showModel(item: Admin) {
 function confirmHandler() {
   state.model = false;
   state.loading[state.current.id as string] = true;
+  state.comfing = true;
 
   emits("setAdmin", state.current, () => {
     state.loading[state.current.id as string] = false;
+    state.comfing = false;
     state.current = {} as Admin;
   });
 }
@@ -353,5 +372,10 @@ function closeHandler() {
 .pointer {
   cursor: pointer;
   margin-left: 10px;
+}
+
+.tip {
+  margin-left: 20px;
+  cursor: pointer;
 }
 </style>
