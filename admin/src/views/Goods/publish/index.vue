@@ -183,7 +183,7 @@ const state = reactive({
   success: false,
   failed: false,
   error: {} as ErrorResponse,
-  accepts: ["jpeg", "png", "gif"],
+  accepts: ["jpeg", "png", "gif", "avif"],
 });
 
 const form = ref();
