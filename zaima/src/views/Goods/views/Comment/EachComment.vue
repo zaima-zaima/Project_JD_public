@@ -19,8 +19,12 @@
       </span>
     </div>
     <div class="thumbs">
-      <div class="thumb-item" v-for="item in props.data.thumbs">
-        <img :src="item" @click="imgScale(item)" alt="" />
+      <div
+        class="thumb-item"
+        v-for="item in props.data.thumbs"
+        @click="imgScale(item)"
+      >
+        <img :src="item" alt="" v-lazy />
       </div>
     </div>
     <div class="content">{{ props.data.content }}</div>
@@ -91,13 +95,13 @@ function imgScale(url: string) {
       width: 100px;
       height: 80px;
       margin-right: 10px;
+      cursor: pointer;
+      &:hover {
+        transform: scale(1.4);
+      }
       img {
         width: 100%;
         height: 100%;
-        &:hover {
-          cursor: pointer;
-          transform: scale(1.4);
-        }
       }
     }
   }

@@ -18,6 +18,7 @@ import OrderDetail from "../views/Order/OrderDetail.vue";
 import OrderList from "../views/Personal/page/orderList/OrderList.vue";
 import NotFoundVue from "../views/NotFound.vue";
 import GithubJumping from "../views/LoginByGithubJumping.vue";
+import GOChrome from "../views/goChrome.vue";
 
 export default [
   {
@@ -125,6 +126,12 @@ export default [
   {
     path: "/:pathMatch(.*)",
     component: NotFoundVue,
+    meta: { auth: false },
+  },
+  {
+    name: "goChrome",
+    path: "/goChrome",
+    component: GOChrome,
     meta: { auth: false },
   },
 ] as RouteRecordRaw[];

@@ -21,7 +21,9 @@
           class="numberInput"
         />
         <div class="icon center">
-          <span v-if="state.tip">X</span>
+          <span v-if="state.tip">
+            <Icon :type="StyleType.close" />
+          </span>
           <span v-if="state.verify === 'true' && !state.tip">√</span>
         </div>
       </div>
@@ -46,15 +48,19 @@
           type="text"
           v-model="state.form.captcha"
           placeholder="请填写验证码"
+          @input="state.codeVerify = false"
+          :maxlength="5"
         />
         <div class="timer">
           <span
             class="hover-base send pointer"
-            v-if="store.state.timer === 0"
+            v-if="store.state.timer === 0 && !state.sending"
             @click="send"
             >发送验证码</span
           >
-          <span v-else>{{ store.state.timer }}</span>
+          <span v-if="store.state.timer !== 0 && !state.sending">{{
+            store.state.timer
+          }}</span>
           <span v-if="state.sending">发送中....</span>
         </div>
       </div>
@@ -203,6 +209,11 @@ function phoneBlur() {
 }
 
 async function nextStep() {
+  if (!reg.test(state.form.phone)) {
+    state.verify = "false";
+    return;
+  }
+
   const data = (await checkCode(state.form.phone, state.form.captcha)) as any;
 
   if (data.code && data.code !== 0) {

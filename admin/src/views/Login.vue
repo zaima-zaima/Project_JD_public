@@ -34,7 +34,6 @@
                 {{ state.errors.password }}
               </div>
             </div>
-            <div class="forgetPass">忘记密码</div>
           </div>
           <div class="login-button" @click="goLogin">
             <div class="button">

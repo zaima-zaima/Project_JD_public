@@ -72,7 +72,15 @@
                 state.errors.password.msg
               }}</span>
             </div>
-            <div class="forgetPass">忘记密码</div>
+            <div class="verify">
+              <span class="base captcha" v-if="state.errors.captcha.show">{{
+                state.errors.captcha.msg
+              }}</span>
+              <ReCaptcha
+                :clientId="recaptchaCode.clientId"
+                @trigger="getToken"
+              />
+            </div>
           </div>
           <div class="login-button" @click="goLogin">
             <div class="button">
@@ -123,6 +131,9 @@ import { useStore } from "vuex";
 import Modal from "../components/Modal.vue";
 import { loginByGithub } from "../api/login";
 import Alert from "../components/Alert.vue";
+import ReCaptcha from "../components/ReCaptcha.vue";
+import recaptchaCode from "../../../server/configure/authKey/reCAPTCHA";
+
 const socket = getCurrentInstance()?.appContext.config.globalProperties.$socket;
 const store = useStore();
 const router = useRouter();
@@ -135,6 +146,7 @@ const state = reactive({
   form: {
     username: "",
     password: "",
+    token: "",
   },
   errors: {
     username: {
@@ -142,6 +154,10 @@ const state = reactive({
       msg: "",
     },
     password: {
+      show: false,
+      msg: "",
+    },
+    captcha: {
       show: false,
       msg: "",
     },
@@ -180,6 +196,12 @@ async function goLogin() {
     state.errors.username.show = false;
   }
 
+  if (!state.form.token) {
+    state.errors.captcha.msg = "请先完成人机认证";
+    state.errors.captcha.show = true;
+    return;
+  }
+
   state.logining = true;
 
   const data = await store.dispatch("Login", state.form);
@@ -196,8 +218,13 @@ async function goLogin() {
     if (store.state.user) {
       if (route.query.from) {
         router.push(route.query.from as string);
-      } else {
+      } else if (data && (!data.code || data.code === 0)) {
         router.push("/");
+      } else {
+        state.show = true;
+        state.alertText = data.msg || "请稍后重试";
+        state.logining = false;
+        return;
       }
     }
   }
@@ -230,6 +257,12 @@ function goHome() {
 async function goLoginByGithub() {
   const githubJumpingLink = (await loginByGithub()) as unknown as string;
   location.href = githubJumpingLink;
+}
+
+function getToken(token: string) {
+  state.form.token = token;
+  state.errors.captcha.msg = "";
+  state.errors.captcha.show = false;
 }
 </script>
 
@@ -501,5 +534,23 @@ async function goLoginByGithub() {
     align-items: center;
     justify-content: center;
   }
+}
+
+.verify {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-top: 30px;
+
+  button {
+    width: 160px;
+    height: 30px;
+    cursor: pointer;
+  }
+}
+
+.captcha {
+  margin-right: 10px;
 }
 </style>

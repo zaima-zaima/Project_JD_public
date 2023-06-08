@@ -31,7 +31,6 @@ import { Admin } from "../../types/Admin";
 import ToolsBar from "./ToolsBar.vue";
 import Table from "./Table.vue";
 import delay from "../../utils/delay";
-import NotFound from "../../components/NotFound.vue";
 import { useRoute } from "vue-router";
 import { ResponseWithCount } from "../../types/response";
 
@@ -53,8 +52,8 @@ watchEffect(async () => {
       {
         senior: store.state.user.id,
       },
-      +(route.query.page as string),
-      +(route.query.limit as string)
+      +(route.query.page as string) || 1,
+      +(route.query.limit as string) || 10
     )) as unknown as ResponseWithCount<Admin>;
 
     state.data = resp.rows;
@@ -66,13 +65,18 @@ watchEffect(async () => {
 });
 
 async function onUpdateAdmin(filter: Object) {
-  state.data = (await fetchAllAdminByFilter(
+  state.loading = true;
+  const resp = (await fetchAllAdminByFilter(
     {
       ...filter,
     },
-    +(route.query.page as string),
-    +(route.query.limit as string)
-  )) as unknown as Admin[];
+    +(route.query.page as string) || 1,
+    +(route.query.limit as string) || 10
+  )) as unknown as ResponseWithCount<Admin>;
+
+  state.data = resp.rows;
+  state.total = resp.count;
+  state.loading = false;
 }
 
 async function onReset() {
@@ -86,7 +90,11 @@ async function onSearch(keyword: string) {
     return;
   }
 
+  state.loading = true;
+
   state.data = (await delay(fetchAdminByKeyword, keyword)) as Admin[];
+
+  state.loading = false;
 }
 </script>
 

@@ -1,17 +1,23 @@
 <template>
-  <div class="comment-container">
-    <div class="comment-content">
-      <Loading :size="200" v-if="state.loading" />
-      <Content
-        :data="state.data"
-        :total="state.total"
-        :page="state.page"
-        :limit="state.limit"
-        @change="changePage"
-        v-else
-      />
+  <div class="comment-box" v-if="state.data.length !== 0 || state.loading">
+    <div
+      class="comment-container"
+      v-if="state.data.length !== 0 || state.loading"
+    >
+      <div class="comment-content">
+        <Loading :size="200" v-if="state.loading" />
+        <Content
+          :data="state.data"
+          :total="state.total"
+          :page="state.page"
+          :limit="state.limit"
+          @change="changePage"
+          v-else
+        />
+      </div>
     </div>
   </div>
+
   <div class="empty" v-if="state.data.length === 0 && !state.loading">
     <Icon :type="StyleType.cartEmpty" :size="60" />
     <span>该商品暂没有任何评论哦！</span>
@@ -59,7 +65,8 @@ function changePage(newPage: number) {
 </script>
 
 <style scoped lang="less">
-.comment-container {
+.comment-container,
+.comment-box {
   min-height: 600px;
 }
 

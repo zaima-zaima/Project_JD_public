@@ -12,7 +12,9 @@ import Edit from "../views/Goods/edit/index.vue";
 import Success from "../views/registerSuccess.vue";
 import LogVue from "../views/Log/Log.vue";
 import Order from "../views/Order/index.vue";
+
 import Department from "../views/Department/index.vue";
+import NotFoundVue from "../views/NotFound.vue";
 
 export default [
   {
@@ -36,4 +38,9 @@ export default [
   { name: "Login", path: "/login", component: Login },
   { name: "Register", path: "/register", component: Register },
   { name: "RegisterSuccess", path: "/registerSuccess", component: Success },
+  {
+    path: "/:pathMatch(.*)",
+    component: NotFoundVue,
+    meta: { auth: false },
+  },
 ] as RouteRecordRaw[];

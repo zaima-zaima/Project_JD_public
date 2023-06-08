@@ -34,6 +34,7 @@ import Register from "./routes/signup";
 import sha256 from "sha256";
 import token from "../configure/authKey/jwt";
 import ExpressAsyncError from "express-async-errors";
+import axios from "axios";
 
 //import routers
 

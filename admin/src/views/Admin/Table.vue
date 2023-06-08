@@ -119,10 +119,14 @@ function changeStatus(admin: Admin) {
 }
 
 async function toggleStatus() {
+  state.loading = true;
   const resp = (await updateAdmin(
     state.currentUser.id as string,
     { status: state.currentStatus[state.currentUser.id as string] } as any
   )) as any;
+
+  state.loading = false;
+
   if (!resp.code || resp.code !== 0) {
     router.go(0);
   }

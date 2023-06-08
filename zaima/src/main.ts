@@ -23,4 +23,10 @@ if (router.currentRoute.value.meta.auth && !token) {
   router.push({ name: "Login" });
 }
 
+if (navigator.vendor !== "Google Inc.") {
+  router.push({
+    name: "goChrome",
+  });
+}
+
 store.dispatch("Whoami");

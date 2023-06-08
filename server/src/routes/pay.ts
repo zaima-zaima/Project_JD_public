@@ -86,7 +86,11 @@ router.post("/", async (req, res, next) => {
 
         if (resp) {
           await userModel.update(
-            { baitiao: (user.baitiao as any) - Number(goods.price) },
+            {
+              baitiao:
+                (user.baitiao as any) -
+                Number(+goods.price * (order as any).count),
+            },
             {
               where: {
                 id: req.body.user,
@@ -101,9 +105,10 @@ router.post("/", async (req, res, next) => {
               role: user.role,
               phone: user.phone,
               credit: user.credit,
-              baitiao: (user.baitiao as any) - Number(goods.price),
+              baitiao:
+                (user.baitiao as any) -
+                Number(+goods.price * (order as any).count),
               avatar: user.avatar,
-              sym: "github",
             } as any,
             7
           );
@@ -188,7 +193,8 @@ router.post("/group", async (req, res, next) => {
       }
 
       const total = (req.body.order as Order).orderList.reduce(
-        (initial, nextValue) => initial + +nextValue.price,
+        (initial, nextValue) =>
+          initial + +nextValue.price * nextValue.cartCount,
         0
       );
 

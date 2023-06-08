@@ -23,6 +23,7 @@ import Error from "../utils/Error";
 import { log } from "console";
 import { goodsUpdate } from "./goods";
 import { updateGoods } from "../mysql/api/goods";
+import goodsModel from "../mysql/model/goods";
 
 export async function fetchAllOrder(page: number, limit: number) {
   if (!page || !limit || !Number(page) || !Number(limit)) {
@@ -249,7 +250,7 @@ export async function updateOrder(id: string, data: Order) {
     throw new Error.Params();
   }
 
-  const order = JSON.parse(JSON.stringify(await findOrderById(id)));
+  const order = JSON.parse(JSON.stringify(await findOrderById(id))) as Order;
 
   if (!order) {
     throw new Error.Params("该订单不存在");
@@ -276,11 +277,58 @@ export async function updateOrder(id: string, data: Order) {
       (order.status === OrderStatus.paid ||
         order.status === OrderStatus.deliver)
     ) {
+      // 当用户取消订单时
+
+      const g = JSON.parse(
+        JSON.stringify(
+          await goodsModel.findByPk(order.goodsId as unknown as string)
+        )
+      ) as Goods;
+
+      // 更新用户的白条额度
+
       await userModel.update(
-        { baitiao: +order.goods.price + (user.baitiao ? user.baitiao : 0) },
+        {
+          baitiao:
+            +g.price * (order as any).count + (user.baitiao ? user.baitiao : 0),
+        },
         {
           where: {
             id: order.user,
+          },
+        }
+      );
+
+      // 更新商品的库存
+
+      await goodsModel.update(
+        {
+          store: g.store + (order as any).count,
+          sold: g.sold - (order as any).count,
+        },
+        {
+          where: {
+            id: order.goodsId,
+          },
+        }
+      );
+    } else if (data.status === "cancel") {
+      // 更新商品的库存
+
+      const g = JSON.parse(
+        JSON.stringify(
+          await goodsModel.findByPk(order.goodsId as unknown as string)
+        )
+      ) as Goods;
+
+      await goodsModel.update(
+        {
+          store: g.store + (order as any).count,
+          sold: g.sold - (order as any).count,
+        },
+        {
+          where: {
+            id: order.goodsId,
           },
         }
       );
@@ -292,6 +340,8 @@ export async function updateOrder(id: string, data: Order) {
 
     return { newOrder, newUser };
   } catch (err) {
+    console.log(err);
+
     throw new Error.UnkownError();
   }
 }

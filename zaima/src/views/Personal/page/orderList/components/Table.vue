@@ -166,7 +166,7 @@
     <Modal :show="state.pushToCart.pushRes">
       <Alert
         alert
-        text="加入成功"
+        :text="state.pushToCart.text"
         @comfirm="state.pushToCart.pushRes = false"
       />
     </Modal>
@@ -364,9 +364,17 @@ function openPushCartModal(order: Order) {
 }
 
 function pushToCart() {
+  if (+state.pushToCart.push.goods.store < state.pushToCart.push.count) {
+    state.pushToCart.pushRes = true;
+    state.pushToCart.show = false;
+    state.pushToCart.text = "无法加入，库存不足";
+    return;
+  }
+
   setCart(state.pushToCart.push.goods, state.pushToCart.push.count);
   state.pushToCart.show = false;
   state.pushToCart.pushRes = true;
+  state.pushToCart.text = "加入成功";
 }
 </script>
 

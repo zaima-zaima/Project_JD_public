@@ -77,6 +77,7 @@ router.put("/:id", async (req, res, next) => {
         phone: newUser.phone,
         credit: newUser.credit,
         baitiao: newUser.baitiao as any,
+        avatar: newUser.avatar || null,
       } as User,
       7
     );

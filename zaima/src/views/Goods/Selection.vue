@@ -244,6 +244,7 @@ function changeCount(val: any) {
       margin-top: 10px;
       display: flex;
       align-items: center;
+      line-height: 20px;
     }
 
     .title {

@@ -134,6 +134,7 @@ function onInput() {
 }
 
 async function toggleChage(status: string, data: Transfer) {
+  state.loading = true;
   if (status === "approve") {
     const resp = await updateAdmin(
       data.target.id as string,
@@ -157,6 +158,8 @@ async function toggleChage(status: string, data: Transfer) {
       status,
     } as any);
   }
+
+  state.loading = false;
 
   state.data = state.data.filter((ele) => ele.id !== data.id);
 }

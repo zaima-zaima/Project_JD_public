@@ -65,23 +65,25 @@ export async function sendSmS(phone: string, req: any) {
     code += randomNumberGenerator(0, 9);
   }
 
-  const smsRes = (await client.send({
-    templateId: sms.smsTmpId,
-    number: req.body.phone,
-    templateParams: [`${code}`, "5"],
-  })) as any;
+  let smsRes;
 
-  console.log(code);
+  try {
+    smsRes = (await client.send({
+      templateId: sms.smsTmpId,
+      number: req.body.phone,
+      templateParams: [`${code}`, "5"],
+    })) as any;
 
-  if (smsRes.code === 0) {
-    if (!req.session.captcha) {
-      req.session.captcha = {};
+    if (smsRes.code === 0) {
+      if (!req.session.captcha) {
+        req.session.captcha = {};
+      }
+      req.session.captcha[req.body.phone] = +code;
+      sendSMS[getClientIp(req)].push(nowResquestTime);
+      lastSend[getClientIp(req)] = nowResquestTime;
+      return true;
     }
-    req.session.captcha[req.body.phone] = +code;
-    sendSMS[getClientIp(req)].push(nowResquestTime);
-    lastSend[getClientIp(req)] = nowResquestTime;
-    return true;
-  } else {
+  } catch {
     throw new Error.UnkownError();
   }
 }

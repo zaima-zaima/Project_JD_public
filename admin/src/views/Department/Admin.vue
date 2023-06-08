@@ -299,6 +299,7 @@ async function submit() {
         confirmButtonText: "确定",
         callback: (action: Action) => {
           state.transfer.show = false;
+          state.form.loading = false;
         },
       });
     } else {

@@ -12,15 +12,13 @@
               <div class="high-frequent-goods">
                 <ul class="high-frequent-goods-container">
                   <li
-                    class="high-item"
+                    class="high-item pointer"
                     :key="item.id"
                     v-for="item in state.frequentGoods"
                   >
-                    <RouterLink to="/">
-                      <span class="hover-base">
-                        {{ item.name }}
-                      </span>
-                    </RouterLink>
+                    <span class="hover-base">
+                      {{ item.name }}
+                    </span>
                   </li>
                 </ul>
               </div>

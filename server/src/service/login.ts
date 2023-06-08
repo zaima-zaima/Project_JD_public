@@ -15,6 +15,8 @@ import server from "../../configure/server";
 import { findUserByBase } from "./user";
 import { fetchOneAdmin } from "./admin";
 import { Admin } from "../types/Admin";
+import reCAPTCHA from "../../configure/authKey/reCAPTCHA";
+import { log } from "console";
 
 export async function loginByGithub(code: string) {
   if (!code) {
@@ -116,6 +118,18 @@ export async function loginByBase(body: any) {
     throw new Error.Params();
   }
 
+  if (!body.token) {
+    throw new Error.Forbiden("请先进行人机认证");
+  }
+
+  const resp = await axios.post(
+    `https://recaptcha.net/recaptcha/api/siteverify?secret=${reCAPTCHA.secretKey}&response=${body.token}`
+  );
+
+  if (!resp.data.success) {
+    throw new Error.Forbiden("人机验证失败");
+  }
+
   body.password = sha256(body.password + server.complexKey);
 
   const user = JSON.parse(JSON.stringify(await findUserByBase(body)));
@@ -148,7 +162,9 @@ export async function loginByBase(body: any) {
       token: authData.token,
       user: authData.user,
     };
-  } catch {
+  } catch (err) {
+    console.log(err);
+
     throw new Error.UnkownError();
   }
 }

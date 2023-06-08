@@ -23,6 +23,10 @@ watchEffect(() => {
       });
   }
 });
+
+(() => {
+  document.title = "京东商城";
+})();
 </script>
 
 <style scoped lang="less">

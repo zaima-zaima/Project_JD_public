@@ -16,6 +16,7 @@ onMounted(async () => {
 
 (async function () {
   load = ElLoading.service({});
+  document.title = "京东商城后台管理";
 })();
 </script>
 

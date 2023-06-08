@@ -2,7 +2,13 @@
   <div class="count-container">
     <div class="decrease pointer" @click="decrease(item)">-</div>
     <div class="nums">{{ item.cartCount }}</div>
-    <div class="increase pointer" @click="increase(item)">+</div>
+    <div
+      class="increase pointer"
+      @click="increase(item)"
+      :class="{ disabled: item.cartCount === +item.store }"
+    >
+      +
+    </div>
   </div>
   <Modal :show="state.show">
     <Alert
@@ -80,5 +86,9 @@ async function comfirmDelete() {
   .nums {
     margin: 0px 10px;
   }
+}
+
+.disabled {
+  background-color: #ccc !important;
 }
 </style>
