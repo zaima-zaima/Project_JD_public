@@ -6,7 +6,7 @@ import "element-plus/dist/index.css";
 import router from "./route/router";
 import store from "./store";
 import { io } from "socket.io-client";
-const socket = io("http://localhost:3200", {
+const socket = io("http://www.zaima.site:3200", {
   transports: ["websocket"],
 });
 

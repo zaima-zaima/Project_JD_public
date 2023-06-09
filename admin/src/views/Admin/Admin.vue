@@ -33,6 +33,7 @@ import Table from "./Table.vue";
 import delay from "../../utils/delay";
 import { useRoute } from "vue-router";
 import { ResponseWithCount } from "../../types/response";
+import router from "../../route/router";
 
 const state = reactive({
   data: [] as Admin[],
@@ -40,6 +41,7 @@ const state = reactive({
   random: "",
   total: 0,
   loading: false,
+  filter: {} as Object,
 });
 
 const route = useRoute();
@@ -50,6 +52,7 @@ watchEffect(async () => {
   if (store.state.user) {
     const resp = (await fetchAllAdminByFilter(
       {
+        ...state.filter,
         senior: store.state.user.id,
       },
       +(route.query.page as string) || 1,
@@ -66,6 +69,7 @@ watchEffect(async () => {
 
 async function onUpdateAdmin(filter: Object) {
   state.loading = true;
+  state.filter = filter;
   const resp = (await fetchAllAdminByFilter(
     {
       ...filter,
@@ -82,6 +86,18 @@ async function onUpdateAdmin(filter: Object) {
 async function onReset() {
   state.random = String(Math.random() + Date.now());
   state.data = state.originData;
+  state.filter = {};
+
+  if (route.query.page && +route.query.page === 1) {
+    return;
+  }
+
+  router.push({
+    query: {
+      ...route.query,
+      page: 1,
+    },
+  });
 }
 
 async function onSearch(keyword: string) {
