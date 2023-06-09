@@ -51,8 +51,8 @@ watchEffect(async () => {
   if (route.query.page && route.query.limit) {
     state.loading = true;
     const resp = (await fetchAllOrder(
-      +route.query.page,
-      +route.query.limit
+      +route.query.page || 1,
+      +route.query.limit || 10
     )) as unknown as ResponseWithCount<Order>;
     state.data = resp.rows;
     state.total = resp.count;

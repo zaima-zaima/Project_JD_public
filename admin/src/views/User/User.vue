@@ -274,14 +274,14 @@ const route = useRoute();
   const rolers = (await getRolers()) as unknown as ResponseWithCount<Role>;
   state.rolers = rolers.rows;
   if (route.query.page && route.query.limit) {
-    state.currentPage = +route.query.page;
-    state.limit = +route.query.limit;
+    state.currentPage = +route.query.page || 1;
+    state.limit = +route.query.limit || 10;
   }
 })();
 
 watchEffect(async () => {
   if (route.query.page && route.query.limit) {
-    await getUser(+route.query.page, +route.query.limit);
+    await getUser(+route.query.page || 1, +route.query.limit || 10);
   }
 });
 
@@ -331,7 +331,7 @@ async function updateUser() {
       );
 
       if (route.query.page && route.query.limit) {
-        await getUser(+route.query.page, +route.query.limit);
+        await getUser(+route.query.page || 1, +route.query.limit || 10);
       }
 
       state.excutting = false;
@@ -387,8 +387,8 @@ async function comfirm() {
     const user = await removeUser(state.currentUser.id as string);
 
     const resp = (await fetchAllUser(
-      +(route.query.page as string),
-      +(route.query.limit as string)
+      +(route.query.page as string) || 1,
+      +(route.query.limit as string) || 10
     )) as unknown as ResponseWithCount<UserType>;
 
     state.user = resp.rows;
@@ -399,8 +399,8 @@ async function comfirm() {
     await userUpdator(state.currentUser.id as string, { status: "normal" });
 
     const resp = (await fetchAllUser(
-      +(route.query.page as string),
-      +(route.query.limit as string)
+      +(route.query.page as string) || 1,
+      +(route.query.limit as string) || 10
     )) as unknown as ResponseWithCount<UserType>;
 
     state.user = resp.rows;
@@ -417,8 +417,8 @@ function closeModal(done: Function) {
 async function fetchUserByFilter(value: Object) {
   state.loading = true;
   const resp = (await fetchAllUser(
-    +(route.query.page as string),
-    +(route.query.limit as string),
+    +(route.query.page as string) || 1,
+    +(route.query.limit as string) || 10,
     value
   )) as unknown as ResponseWithCount<UserType>;
 

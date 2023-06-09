@@ -16,8 +16,8 @@
         <div class="pager-container">
           <Pager
             :total="state.total"
-            :limit="+(route.query.limit as string)"
-            :page="+(route.query.page as string)"
+            :limit="+(route.query.limit as string) || 10"
+            :page="+(route.query.page as string) || 1"
             @change="changePage"
           />
         </div>
@@ -62,8 +62,8 @@ watchEffect(async () => {
     state.searching = true;
     const resp = (await searchGoods(
       route.query.keyword as string,
-      +route.query.page,
-      +route.query.limit
+      +route.query.page || 1,
+      +route.query.limit || 10
     )) as unknown as ResponseWithCount<Goods>;
 
     state.searching = false;

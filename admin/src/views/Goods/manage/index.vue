@@ -36,8 +36,8 @@ watchEffect(async () => {
   if (route.query.page && route.query.limit) {
     state.loading = true;
     const resp = (await getGoods(
-      +route.query.page,
-      +route.query.limit
+      +route.query.page || 1,
+      +route.query.limit || 10
     )) as unknown as ResponseWithCount<Goods>;
     state.total = resp.count;
     state.data = resp.rows as Goods[];

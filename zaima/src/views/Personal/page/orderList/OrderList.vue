@@ -69,8 +69,8 @@
       />
       <Pager
         :total="state.total"
-        :limit="+(route.query.limit as string)"
-        :page="+(route.query.page as string)"
+        :limit="+(route.query.limit as string) || 10"
+        :page="+(route.query.page as string) || 1"
         @change="changePage"
         v-if="state.list.length !== 0"
       />
@@ -112,8 +112,8 @@ watchEffect(async () => {
     state.loading = true;
     const resp = (await getOrderByUser(
       store.state.user.id,
-      +(route.query.page as string),
-      +(route.query.limit as string),
+      +(route.query.page as string) || 1,
+      +(route.query.limit as string) || 10,
       {
         status: route.query.status === "all" ? undefined : route.query.status,
       }

@@ -50,8 +50,8 @@
         background
         layout="prev, pager, next"
         :total="props.total"
-        :page-size="+(route.query.limit as string)"
-        :current-page="+(route.query.page as string)"
+        :page-size="+(route.query.limit as string) || 10"
+        :current-page="+(route.query.page as string) || 1"
         :hide-on-single-page="true"
         @current-change="changePage"
       />
