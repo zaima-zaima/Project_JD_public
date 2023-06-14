@@ -16,7 +16,6 @@ import { findUserByBase } from "./user";
 import { fetchOneAdmin } from "./admin";
 import { Admin } from "../types/Admin";
 import reCAPTCHA from "../../configure/authKey/reCAPTCHA";
-import { log } from "console";
 
 export async function loginByGithub(code: string) {
   if (!code) {
@@ -48,7 +47,7 @@ export async function loginByGithub(code: string) {
     });
 
     let user = {
-      username: data.name,
+      username: data.login,
       avatar: data.avatar_url,
       role: roler.user,
       id: md5(sha(String(data.id))),
@@ -74,13 +73,9 @@ export async function loginByGithub(code: string) {
         JSON.stringify(await findOneUserById(md5(sha(String(data.id)))))
       );
 
-      if (u.status === "suspend") {
-        throw new Error.Forbiden("你的账户已被冻结，详情请联系管理员");
-      }
-
       user = {
         ...user,
-        baitiao: register.baitiao,
+        baitiao: null,
         credit: register.credit,
         sym: "github",
       } as any;
@@ -91,6 +86,10 @@ export async function loginByGithub(code: string) {
         token: "Bearer " + authData.token,
         user: authData.user,
       };
+    }
+
+    if (userDetact.status === "suspend") {
+      throw new Error.Forbiden("你的账户已被冻结，详情请联系管理员");
     }
 
     // 登录成功，生成token
