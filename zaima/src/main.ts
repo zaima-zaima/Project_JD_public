@@ -6,7 +6,7 @@ import router from "./router/index";
 import store from "./store/index";
 import { io } from "socket.io-client";
 import lazy from "./directive/lazy";
-const socket = io("http://localhost:3200", {
+const socket = io("http://www.zaima.site:3200", {
   transports: ["websocket"],
 });
 
@@ -23,7 +23,7 @@ if (router.currentRoute.value.meta.auth && !token) {
   router.push({ name: "Login" });
 }
 
-if (navigator.vendor !== "Google Inc.") {
+if (navigator.userAgent.indexOf("Chrome") < 0) {
   router.push({
     name: "goChrome",
   });
