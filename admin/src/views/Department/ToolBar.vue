@@ -126,6 +126,7 @@ function addDepartment() {
   emits("addDepartment", state.form.name, () => {
     state.loading = false;
     state.model = false;
+    state.form.name = "";
   });
 }
 

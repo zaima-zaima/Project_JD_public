@@ -42,6 +42,7 @@ import { dataTool } from "echarts";
 import { getTransferById } from "../../api/transfer";
 import { Transfer } from "../../types/Transfer";
 import { useStore } from "vuex";
+import { ElMessageBox } from "element-plus";
 
 const state = reactive({
   data: [] as Department[],
@@ -115,8 +116,14 @@ async function setAdmin(item: AdminType, callback: Function) {
 }
 
 async function addDepartment(name: string, callback: Function) {
-  const data = (await departmentCreator(name)) as unknown as Department;
+  const data = (await departmentCreator(name)) as unknown as any;
   callback();
+
+  if (data.code && data.code !== 0) {
+    ElMessageBox.alert(data.msg, "添加失败");
+    return;
+  }
+
   state.data.push(data);
 }
 
